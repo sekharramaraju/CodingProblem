@@ -2,6 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { InmarLocationModule } from './location/location.module';
 import { InmarDepartmentModule } from './department/department.module';
+import { InmarCategoryModule } from './category/category.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -9,6 +10,7 @@ import { InmarDepartmentModule } from './department/department.module';
     imports: [
         InmarLocationModule,
         InmarDepartmentModule,
+        InmarCategoryModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],
