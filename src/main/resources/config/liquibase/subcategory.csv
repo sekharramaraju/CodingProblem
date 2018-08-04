@@ -1,0 +1,15 @@
+id;name;status;category_id
+1;Bagels;Active;1
+2;Beverages;Active;2
+3;Bouquets and Cut Flowers;Active;3
+4;All Other;Active;4
+5;Bread or Dough Products Frozen;Active;5
+6;Rice Cakes;Active;6
+7;Audio;Active;7
+8;Video DVD;Active;7
+9;Beeding;Active;8
+10;Frozen Shellfish;Active;9
+11;All Other Seafood;Active;10
+12;Prepared Seafood Entrees;Active;10
+13;Salads;Active;10
+

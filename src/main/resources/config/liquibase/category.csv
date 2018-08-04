@@ -1,0 +1,12 @@
+id;name;status;department_id
+1;Bakery;Active;1
+2;Self Service Deli Cold;Active;2
+3;Bouquets and Cut Flowers;Active;3
+4;Service Deli;Active;2
+5;Frozen Bake;Active;4
+6;Crackers;Active;5
+7;Audio Video;Active;6
+8;Housewares;Active;6
+9;Frozen Shellfish;Active;4
+10;Other Seafood;Active;4
+11;Bakery Bread;Active;1

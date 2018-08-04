@@ -1,0 +1,10 @@
+id;name;status;location_id
+1;Bakery;Active;1
+2;Deli and Foodservice;Active;1
+3;Floral;Active;1
+4;Frozen;Active;2
+5;Grocery;Active;2
+6;GM;Active;2
+7;Seafood;Active;1
+
+
