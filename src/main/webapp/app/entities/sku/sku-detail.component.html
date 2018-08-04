@@ -1,0 +1,45 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="sku">
+            <h2><span>Sku</span> {{sku.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Skuid</span></dt>
+                <dd>
+                    <span>{{sku.skuid}}</span>
+                </dd>
+                <dt><span>Name</span></dt>
+                <dd>
+                    <span>{{sku.name}}</span>
+                </dd>
+                <dt><span>Barcode</span></dt>
+                <dd>
+                    <span>{{sku.barcode}}</span>
+                </dd>
+                <dt><span>Status</span></dt>
+                <dd>
+                    <span>{{sku.status}}</span>
+                </dd>
+                <dt><span>Subcategory</span></dt>
+                <dd>
+                    <div *ngIf="sku.subcategoryId">
+                        <a [routerLink]="['/subcategory', sku.subcategoryId, 'view']">{{sku.subcategoryName}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/sku', sku.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>
