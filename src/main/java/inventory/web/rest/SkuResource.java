@@ -4,17 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 import inventory.service.SkuService;
 import inventory.web.rest.errors.BadRequestAlertException;
 import inventory.web.rest.util.HeaderUtil;
-import inventory.web.rest.util.PaginationUtil;
 import inventory.service.dto.SkuDTO;
-import inventory.service.dto.SkuCriteria;
-import inventory.service.SkuQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,11 +31,8 @@ public class SkuResource {
 
     private final SkuService skuService;
 
-    private final SkuQueryService skuQueryService;
-
-    public SkuResource(SkuService skuService, SkuQueryService skuQueryService) {
+    public SkuResource(SkuService skuService) {
         this.skuService = skuService;
-        this.skuQueryService = skuQueryService;
     }
 
     /**
@@ -90,17 +80,13 @@ public class SkuResource {
     /**
      * GET  /skus : get all the skus.
      *
-     * @param pageable the pagination information
-     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of skus in body
      */
     @GetMapping("/skus")
     @Timed
-    public ResponseEntity<List<SkuDTO>> getAllSkus(SkuCriteria criteria, Pageable pageable) {
-        log.debug("REST request to get Skus by criteria: {}", criteria);
-        Page<SkuDTO> page = skuQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/skus");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    public List<SkuDTO> getAllSkus() {
+        log.debug("REST request to get all Skus");
+        return skuService.findAll();
     }
 
     /**

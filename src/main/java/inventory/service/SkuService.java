@@ -2,9 +2,7 @@ package inventory.service;
 
 import inventory.service.dto.SkuDTO;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,10 +21,9 @@ public interface SkuService {
     /**
      * Get all the skus.
      *
-     * @param pageable the pagination information
      * @return the list of entities
      */
-    Page<SkuDTO> findAll(Pageable pageable);
+    List<SkuDTO> findAll();
 
 
     /**

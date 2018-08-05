@@ -8,13 +8,13 @@ import inventory.service.mapper.DepartmentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 /**
  * Service Implementation for managing Department.
  */
@@ -50,15 +50,15 @@ public class DepartmentServiceImpl implements DepartmentService {
     /**
      * Get all the departments.
      *
-     * @param pageable the pagination information
      * @return the list of entities
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<DepartmentDTO> findAll(Pageable pageable) {
+    public List<DepartmentDTO> findAll() {
         log.debug("Request to get all Departments");
-        return departmentRepository.findAll(pageable)
-            .map(departmentMapper::toDto);
+        return departmentRepository.findAll().stream()
+            .map(departmentMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
 
@@ -86,4 +86,34 @@ public class DepartmentServiceImpl implements DepartmentService {
         log.debug("Request to delete Department : {}", id);
         departmentRepository.deleteById(id);
     }
+    
+    /**
+     * Get all the departments.
+     *
+     * @return the list of entities
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<DepartmentDTO> findByLocation(Long id) {
+        log.debug("Request to get all Departments");
+        return departmentRepository.findByLocation(id).stream()
+            .map(departmentMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
+    }
+    
+    
+    /**
+     * Get one department by id in given location
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<DepartmentDTO> findOneByIdAndLocation(Long id, Long locationId) {
+        log.debug("Request to get Department : {}", id);
+        return departmentRepository.findOneByIdAndLocation(id, locationId)
+            .map(departmentMapper::toDto);
+    }
+    
 }

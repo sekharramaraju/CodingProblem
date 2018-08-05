@@ -22,11 +22,11 @@
             ]
         }
     ],
-    "changelogDate": "20180804054951",
+    "changelogDate": "20180804170025",
     "dto": "mapstruct",
     "searchEngine": false,
     "service": "serviceImpl",
     "entityTableName": "location",
-    "jpaMetamodelFiltering": true,
-    "pagination": "pagination"
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
 }

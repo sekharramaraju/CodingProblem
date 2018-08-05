@@ -13,13 +13,13 @@
     <div class="table-responsive" *ngIf="skus">
         <table class="table table-striped">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="skuid"><span>Skuid</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="name"><span>Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="barcode"><span>Barcode</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="status"><span>Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="subcategoryName"><span>Subcategory</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <tr>
+            <th><span>ID</span></th>
+            <th><span>Skuid</span></th>
+            <th><span>Name</span></th>
+            <th><span>Barcode</span></th>
+            <th><span>Status</span></th>
+            <th><span>Subcategory</span></th>
             <th></th>
             </tr>
             </thead>
@@ -62,13 +62,5 @@
             </tr>
             </tbody>
         </table>
-    </div>
-    <div *ngIf="skus && skus.length">
-        <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
-        </div>
-        <div class="row justify-content-center">
-            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
-        </div>
     </div>
 </div>

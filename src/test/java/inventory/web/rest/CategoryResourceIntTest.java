@@ -3,14 +3,11 @@ package inventory.web.rest;
 import inventory.InmarApp;
 
 import inventory.domain.Category;
-import inventory.domain.Department;
 import inventory.repository.CategoryRepository;
 import inventory.service.CategoryService;
 import inventory.service.dto.CategoryDTO;
 import inventory.service.mapper.CategoryMapper;
 import inventory.web.rest.errors.ExceptionTranslator;
-import inventory.service.dto.CategoryCriteria;
-import inventory.service.CategoryQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,9 +60,6 @@ public class CategoryResourceIntTest {
     private CategoryService categoryService;
 
     @Autowired
-    private CategoryQueryService categoryQueryService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -84,7 +78,7 @@ public class CategoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CategoryResource categoryResource = new CategoryResource(categoryService, categoryQueryService);
+        final CategoryResource categoryResource = new CategoryResource(categoryService);
         this.restCategoryMockMvc = MockMvcBuilders.standaloneSetup(categoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -218,126 +212,6 @@ public class CategoryResourceIntTest {
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
-
-    @Test
-    @Transactional
-    public void getAllCategoriesByNameIsEqualToSomething() throws Exception {
-        // Initialize the database
-        categoryRepository.saveAndFlush(category);
-
-        // Get all the categoryList where name equals to DEFAULT_NAME
-        defaultCategoryShouldBeFound("name.equals=" + DEFAULT_NAME);
-
-        // Get all the categoryList where name equals to UPDATED_NAME
-        defaultCategoryShouldNotBeFound("name.equals=" + UPDATED_NAME);
-    }
-
-    @Test
-    @Transactional
-    public void getAllCategoriesByNameIsInShouldWork() throws Exception {
-        // Initialize the database
-        categoryRepository.saveAndFlush(category);
-
-        // Get all the categoryList where name in DEFAULT_NAME or UPDATED_NAME
-        defaultCategoryShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
-
-        // Get all the categoryList where name equals to UPDATED_NAME
-        defaultCategoryShouldNotBeFound("name.in=" + UPDATED_NAME);
-    }
-
-    @Test
-    @Transactional
-    public void getAllCategoriesByNameIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        categoryRepository.saveAndFlush(category);
-
-        // Get all the categoryList where name is not null
-        defaultCategoryShouldBeFound("name.specified=true");
-
-        // Get all the categoryList where name is null
-        defaultCategoryShouldNotBeFound("name.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllCategoriesByStatusIsEqualToSomething() throws Exception {
-        // Initialize the database
-        categoryRepository.saveAndFlush(category);
-
-        // Get all the categoryList where status equals to DEFAULT_STATUS
-        defaultCategoryShouldBeFound("status.equals=" + DEFAULT_STATUS);
-
-        // Get all the categoryList where status equals to UPDATED_STATUS
-        defaultCategoryShouldNotBeFound("status.equals=" + UPDATED_STATUS);
-    }
-
-    @Test
-    @Transactional
-    public void getAllCategoriesByStatusIsInShouldWork() throws Exception {
-        // Initialize the database
-        categoryRepository.saveAndFlush(category);
-
-        // Get all the categoryList where status in DEFAULT_STATUS or UPDATED_STATUS
-        defaultCategoryShouldBeFound("status.in=" + DEFAULT_STATUS + "," + UPDATED_STATUS);
-
-        // Get all the categoryList where status equals to UPDATED_STATUS
-        defaultCategoryShouldNotBeFound("status.in=" + UPDATED_STATUS);
-    }
-
-    @Test
-    @Transactional
-    public void getAllCategoriesByStatusIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        categoryRepository.saveAndFlush(category);
-
-        // Get all the categoryList where status is not null
-        defaultCategoryShouldBeFound("status.specified=true");
-
-        // Get all the categoryList where status is null
-        defaultCategoryShouldNotBeFound("status.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllCategoriesByDepartmentIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Department department = DepartmentResourceIntTest.createEntity(em);
-        em.persist(department);
-        em.flush();
-        category.setDepartment(department);
-        categoryRepository.saveAndFlush(category);
-        Long departmentId = department.getId();
-
-        // Get all the categoryList where department equals to departmentId
-        defaultCategoryShouldBeFound("departmentId.equals=" + departmentId);
-
-        // Get all the categoryList where department equals to departmentId + 1
-        defaultCategoryShouldNotBeFound("departmentId.equals=" + (departmentId + 1));
-    }
-
-    /**
-     * Executes the search, and checks that the default entity is returned
-     */
-    private void defaultCategoryShouldBeFound(String filter) throws Exception {
-        restCategoryMockMvc.perform(get("/api/categories?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(category.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
-    }
-
-    /**
-     * Executes the search, and checks that the default entity is not returned
-     */
-    private void defaultCategoryShouldNotBeFound(String filter) throws Exception {
-        restCategoryMockMvc.perform(get("/api/categories?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$").isEmpty());
-    }
-
     @Test
     @Transactional
     public void getNonExistingCategory() throws Exception {

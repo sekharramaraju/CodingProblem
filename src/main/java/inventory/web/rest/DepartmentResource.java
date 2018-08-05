@@ -4,17 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 import inventory.service.DepartmentService;
 import inventory.web.rest.errors.BadRequestAlertException;
 import inventory.web.rest.util.HeaderUtil;
-import inventory.web.rest.util.PaginationUtil;
 import inventory.service.dto.DepartmentDTO;
-import inventory.service.dto.DepartmentCriteria;
-import inventory.service.DepartmentQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,11 +31,8 @@ public class DepartmentResource {
 
     private final DepartmentService departmentService;
 
-    private final DepartmentQueryService departmentQueryService;
-
-    public DepartmentResource(DepartmentService departmentService, DepartmentQueryService departmentQueryService) {
+    public DepartmentResource(DepartmentService departmentService) {
         this.departmentService = departmentService;
-        this.departmentQueryService = departmentQueryService;
     }
 
     /**
@@ -90,17 +80,13 @@ public class DepartmentResource {
     /**
      * GET  /departments : get all the departments.
      *
-     * @param pageable the pagination information
-     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of departments in body
      */
     @GetMapping("/departments")
     @Timed
-    public ResponseEntity<List<DepartmentDTO>> getAllDepartments(DepartmentCriteria criteria, Pageable pageable) {
-        log.debug("REST request to get Departments by criteria: {}", criteria);
-        Page<DepartmentDTO> page = departmentQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/departments");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    public List<DepartmentDTO> getAllDepartments() {
+        log.debug("REST request to get all Departments");
+        return departmentService.findAll();
     }
 
     /**
@@ -130,4 +116,31 @@ public class DepartmentResource {
         departmentService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+    
+    /**
+     * GET  /departments : get all the departments.
+     *
+     * @return the ResponseEntity with status 200 (OK) and the list of departments in body
+     */
+    @GetMapping("/locations/{locationId}/departments")
+    @Timed
+    public List<DepartmentDTO> getAllDepartments(@PathVariable Long locationId) {
+        log.debug("REST request to get all Departments by Location : {}", locationId);
+        return departmentService.findByLocation(locationId);
+    }
+
+    /**
+     * GET  /departments/:id : get the "id" department.
+     *
+     * @param id the id of the departmentDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the departmentDTO, or with status 404 (Not Found)
+     */
+    @GetMapping("/locations/{locationId}/departments/{id}")
+    @Timed
+    public ResponseEntity<DepartmentDTO> getDepartmentByLocation(@PathVariable Long id, @PathVariable Long locationId) {
+        log.debug("REST request to get Department : {}", id);
+        Optional<DepartmentDTO> departmentDTO = departmentService.findOneByIdAndLocation(id, locationId);
+        return ResponseUtil.wrapOrNotFound(departmentDTO);
+    }
+    
 }
