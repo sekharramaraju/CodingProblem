@@ -86,4 +86,33 @@ public class SubcategoryServiceImpl implements SubcategoryService {
         log.debug("Request to delete Subcategory : {}", id);
         subcategoryRepository.deleteById(id);
     }
+    
+    /**
+     * Get all the subcategories.
+     *
+     * @return the list of entities
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<SubcategoryDTO> findAllByLocationAndDepartmentAndCategory(Long locationId, Long departmentId, Long categoryId) {
+        log.debug("Request to get all Subcategories by location department and category");
+        return subcategoryRepository.findAllByLocationAndDepartmentAndCategory(locationId, departmentId, categoryId).stream()
+            .map(subcategoryMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
+    }
+
+
+    /**
+     * Get one subcategory by id.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<SubcategoryDTO> findOneByLocationAndDepartmentAndCategory(Long locationId, Long departmentId, Long categoryId,Long id) {
+        log.debug("Request to get Subcategory : {}", id);
+        return subcategoryRepository.findOneByLocationAndDepartmentAndCategory(locationId, departmentId, categoryId, id)
+            .map(subcategoryMapper::toDto);
+    }
 }

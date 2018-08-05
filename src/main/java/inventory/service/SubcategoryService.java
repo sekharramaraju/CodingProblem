@@ -40,4 +40,21 @@ public interface SubcategoryService {
      * @param id the id of the entity
      */
     void delete(Long id);
+    
+    /**
+     * Get all the subcategories by location, department and category
+     *
+     * @return the list of entities
+     */
+    List<SubcategoryDTO> findAllByLocationAndDepartmentAndCategory(Long locationId, Long departmentId, Long categoryId);
+
+
+    /**
+     * Get the "id" subcategory.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    Optional<SubcategoryDTO> findOneByLocationAndDepartmentAndCategory(Long locationId, Long departmentId, Long categoryId,Long id);
+    
 }
