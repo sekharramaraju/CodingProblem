@@ -116,4 +116,33 @@ public class CategoryResource {
         categoryService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+    
+    
+    /**
+     * GET  /categories : get all the categories based on location and department
+     *
+     * @return the ResponseEntity with status 200 (OK) and the list of categories in body
+     */
+    @GetMapping("/locations/{locationId}/departments/{departmentId}/categories")
+    @Timed
+    public List<CategoryDTO> getAllCategoriesByLocationAndDepartment(@PathVariable Long locationId, @PathVariable Long departmentId) {
+        log.debug("REST request to get all Categories based on Location and Department: {}", locationId, departmentId);
+        return categoryService.findAllByLocationAndDepartment(locationId, departmentId);
+    }
+
+    /**
+     * GET  /categories/:id : get the "id" category.
+     *
+     * @param id the id of the categoryDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the categoryDTO, or with status 404 (Not Found)
+     */
+    @GetMapping("/locations/{locationId}/departments/{departmentId}/categories/{id}")
+    @Timed
+    public ResponseEntity<CategoryDTO> getCategoryByLocationAndDepartment(@PathVariable Long locationId, @PathVariable Long departmentId, @PathVariable Long id) {
+        log.debug("REST request to get Category : {}", locationId, departmentId, id);
+        Optional<CategoryDTO> categoryDTO = categoryService.findOneByLocationAndDepartment(locationId, departmentId,id);
+        return ResponseUtil.wrapOrNotFound(categoryDTO);
+    }
+
+    
 }

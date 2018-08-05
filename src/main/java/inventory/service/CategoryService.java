@@ -40,4 +40,21 @@ public interface CategoryService {
      * @param id the id of the entity
      */
     void delete(Long id);
+    
+    /**
+     * Get all the categories by locationid
+     *
+     * @return the list of entities
+     */
+    List<CategoryDTO> findAllByLocationAndDepartment(Long locationId, Long departmentId);
+
+
+    /**
+     * Get the "id" category by location and department
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    Optional<CategoryDTO> findOneByLocationAndDepartment(Long locationId, Long departmentId, Long id);
+    
 }

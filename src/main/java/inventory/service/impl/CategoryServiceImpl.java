@@ -86,4 +86,34 @@ public class CategoryServiceImpl implements CategoryService {
         log.debug("Request to delete Category : {}", id);
         categoryRepository.deleteById(id);
     }
+    
+    /**
+     * Get all the categories.
+     *
+     * @return the list of entities
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<CategoryDTO> findAllByLocationAndDepartment(Long locationId, Long departmentId) {
+        log.debug("Request to get all Categories");
+        return categoryRepository.findAllByLocationAndDepartment(locationId, departmentId).stream()
+            .map(categoryMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
+    }
+
+
+    /**
+     * Get one category by id.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<CategoryDTO> findOneByLocationAndDepartment(Long locationId, Long departmentId, Long id) {
+        log.debug("Request to get Category : {}", id);
+        return categoryRepository.findOneByIdAndLocationAndDepartment(locationId, departmentId,id)
+            .map(categoryMapper::toDto);
+    }
+    
 }
