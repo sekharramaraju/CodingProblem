@@ -8,13 +8,13 @@ import inventory.service.mapper.SubcategoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 /**
  * Service Implementation for managing Subcategory.
  */
@@ -50,15 +50,15 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     /**
      * Get all the subcategories.
      *
-     * @param pageable the pagination information
      * @return the list of entities
      */
     @Override
     @Transactional(readOnly = true)
-    public Page<SubcategoryDTO> findAll(Pageable pageable) {
+    public List<SubcategoryDTO> findAll() {
         log.debug("Request to get all Subcategories");
-        return subcategoryRepository.findAll(pageable)
-            .map(subcategoryMapper::toDto);
+        return subcategoryRepository.findAll().stream()
+            .map(subcategoryMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
 
@@ -85,5 +85,34 @@ public class SubcategoryServiceImpl implements SubcategoryService {
     public void delete(Long id) {
         log.debug("Request to delete Subcategory : {}", id);
         subcategoryRepository.deleteById(id);
+    }
+    
+    /**
+     * Get all the subcategories.
+     *
+     * @return the list of entities
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<SubcategoryDTO> findAllByLocationAndDepartmentAndCategory(Long locationId, Long departmentId, Long categoryId) {
+        log.debug("Request to get all Subcategories by location department and category");
+        return subcategoryRepository.findAllByLocationAndDepartmentAndCategory(locationId, departmentId, categoryId).stream()
+            .map(subcategoryMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
+    }
+
+
+    /**
+     * Get one subcategory by id.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<SubcategoryDTO> findOneByLocationAndDepartmentAndCategory(Long locationId, Long departmentId, Long categoryId,Long id) {
+        log.debug("Request to get Subcategory : {}", id);
+        return subcategoryRepository.findOneByLocationAndDepartmentAndCategory(locationId, departmentId, categoryId, id)
+            .map(subcategoryMapper::toDto);
     }
 }

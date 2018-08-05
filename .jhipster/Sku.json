@@ -56,6 +56,6 @@
     "searchEngine": false,
     "service": "serviceImpl",
     "entityTableName": "sku",
-    "jpaMetamodelFiltering": true,
-    "pagination": "pagination"
+    "jpaMetamodelFiltering": false,
+    "pagination": "no"
 }

@@ -4,17 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 import inventory.service.CategoryService;
 import inventory.web.rest.errors.BadRequestAlertException;
 import inventory.web.rest.util.HeaderUtil;
-import inventory.web.rest.util.PaginationUtil;
 import inventory.service.dto.CategoryDTO;
-import inventory.service.dto.CategoryCriteria;
-import inventory.service.CategoryQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,11 +31,8 @@ public class CategoryResource {
 
     private final CategoryService categoryService;
 
-    private final CategoryQueryService categoryQueryService;
-
-    public CategoryResource(CategoryService categoryService, CategoryQueryService categoryQueryService) {
+    public CategoryResource(CategoryService categoryService) {
         this.categoryService = categoryService;
-        this.categoryQueryService = categoryQueryService;
     }
 
     /**
@@ -90,17 +80,13 @@ public class CategoryResource {
     /**
      * GET  /categories : get all the categories.
      *
-     * @param pageable the pagination information
-     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of categories in body
      */
     @GetMapping("/categories")
     @Timed
-    public ResponseEntity<List<CategoryDTO>> getAllCategories(CategoryCriteria criteria, Pageable pageable) {
-        log.debug("REST request to get Categories by criteria: {}", criteria);
-        Page<CategoryDTO> page = categoryQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/categories");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    public List<CategoryDTO> getAllCategories() {
+        log.debug("REST request to get all Categories");
+        return categoryService.findAll();
     }
 
     /**
@@ -130,4 +116,33 @@ public class CategoryResource {
         categoryService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+    
+    
+    /**
+     * GET  /categories : get all the categories based on location and department
+     *
+     * @return the ResponseEntity with status 200 (OK) and the list of categories in body
+     */
+    @GetMapping("/locations/{locationId}/departments/{departmentId}/categories")
+    @Timed
+    public List<CategoryDTO> getAllCategoriesByLocationAndDepartment(@PathVariable Long locationId, @PathVariable Long departmentId) {
+        log.debug("REST request to get all Categories based on Location and Department: {}", locationId, departmentId);
+        return categoryService.findAllByLocationAndDepartment(locationId, departmentId);
+    }
+
+    /**
+     * GET  /categories/:id : get the "id" category.
+     *
+     * @param id the id of the categoryDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the categoryDTO, or with status 404 (Not Found)
+     */
+    @GetMapping("/locations/{locationId}/departments/{departmentId}/categories/{id}")
+    @Timed
+    public ResponseEntity<CategoryDTO> getCategoryByLocationAndDepartment(@PathVariable Long locationId, @PathVariable Long departmentId, @PathVariable Long id) {
+        log.debug("REST request to get Category : {}", locationId, departmentId, id);
+        Optional<CategoryDTO> categoryDTO = categoryService.findOneByLocationAndDepartment(locationId, departmentId,id);
+        return ResponseUtil.wrapOrNotFound(categoryDTO);
+    }
+
+    
 }

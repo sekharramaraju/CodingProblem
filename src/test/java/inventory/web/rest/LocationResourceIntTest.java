@@ -8,8 +8,6 @@ import inventory.service.LocationService;
 import inventory.service.dto.LocationDTO;
 import inventory.service.mapper.LocationMapper;
 import inventory.web.rest.errors.ExceptionTranslator;
-import inventory.service.dto.LocationCriteria;
-import inventory.service.LocationQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,9 +60,6 @@ public class LocationResourceIntTest {
     private LocationService locationService;
 
     @Autowired
-    private LocationQueryService locationQueryService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -83,7 +78,7 @@ public class LocationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LocationResource locationResource = new LocationResource(locationService, locationQueryService);
+        final LocationResource locationResource = new LocationResource(locationService);
         this.restLocationMockMvc = MockMvcBuilders.standaloneSetup(locationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -217,107 +212,6 @@ public class LocationResourceIntTest {
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
-
-    @Test
-    @Transactional
-    public void getAllLocationsByNameIsEqualToSomething() throws Exception {
-        // Initialize the database
-        locationRepository.saveAndFlush(location);
-
-        // Get all the locationList where name equals to DEFAULT_NAME
-        defaultLocationShouldBeFound("name.equals=" + DEFAULT_NAME);
-
-        // Get all the locationList where name equals to UPDATED_NAME
-        defaultLocationShouldNotBeFound("name.equals=" + UPDATED_NAME);
-    }
-
-    @Test
-    @Transactional
-    public void getAllLocationsByNameIsInShouldWork() throws Exception {
-        // Initialize the database
-        locationRepository.saveAndFlush(location);
-
-        // Get all the locationList where name in DEFAULT_NAME or UPDATED_NAME
-        defaultLocationShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
-
-        // Get all the locationList where name equals to UPDATED_NAME
-        defaultLocationShouldNotBeFound("name.in=" + UPDATED_NAME);
-    }
-
-    @Test
-    @Transactional
-    public void getAllLocationsByNameIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        locationRepository.saveAndFlush(location);
-
-        // Get all the locationList where name is not null
-        defaultLocationShouldBeFound("name.specified=true");
-
-        // Get all the locationList where name is null
-        defaultLocationShouldNotBeFound("name.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllLocationsByStatusIsEqualToSomething() throws Exception {
-        // Initialize the database
-        locationRepository.saveAndFlush(location);
-
-        // Get all the locationList where status equals to DEFAULT_STATUS
-        defaultLocationShouldBeFound("status.equals=" + DEFAULT_STATUS);
-
-        // Get all the locationList where status equals to UPDATED_STATUS
-        defaultLocationShouldNotBeFound("status.equals=" + UPDATED_STATUS);
-    }
-
-    @Test
-    @Transactional
-    public void getAllLocationsByStatusIsInShouldWork() throws Exception {
-        // Initialize the database
-        locationRepository.saveAndFlush(location);
-
-        // Get all the locationList where status in DEFAULT_STATUS or UPDATED_STATUS
-        defaultLocationShouldBeFound("status.in=" + DEFAULT_STATUS + "," + UPDATED_STATUS);
-
-        // Get all the locationList where status equals to UPDATED_STATUS
-        defaultLocationShouldNotBeFound("status.in=" + UPDATED_STATUS);
-    }
-
-    @Test
-    @Transactional
-    public void getAllLocationsByStatusIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        locationRepository.saveAndFlush(location);
-
-        // Get all the locationList where status is not null
-        defaultLocationShouldBeFound("status.specified=true");
-
-        // Get all the locationList where status is null
-        defaultLocationShouldNotBeFound("status.specified=false");
-    }
-    /**
-     * Executes the search, and checks that the default entity is returned
-     */
-    private void defaultLocationShouldBeFound(String filter) throws Exception {
-        restLocationMockMvc.perform(get("/api/locations?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(location.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
-    }
-
-    /**
-     * Executes the search, and checks that the default entity is not returned
-     */
-    private void defaultLocationShouldNotBeFound(String filter) throws Exception {
-        restLocationMockMvc.perform(get("/api/locations?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$").isEmpty());
-    }
-
     @Test
     @Transactional
     public void getNonExistingLocation() throws Exception {

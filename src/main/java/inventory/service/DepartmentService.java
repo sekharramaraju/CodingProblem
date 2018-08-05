@@ -2,9 +2,7 @@ package inventory.service;
 
 import inventory.service.dto.DepartmentDTO;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,10 +21,9 @@ public interface DepartmentService {
     /**
      * Get all the departments.
      *
-     * @param pageable the pagination information
      * @return the list of entities
      */
-    Page<DepartmentDTO> findAll(Pageable pageable);
+    List<DepartmentDTO> findAll();
 
 
     /**
@@ -43,4 +40,20 @@ public interface DepartmentService {
      * @param id the id of the entity
      */
     void delete(Long id);
+    
+    /**
+     * Get all the departments by locationId
+     *
+     * @return the list of entities
+     */
+    List<DepartmentDTO> findByLocation(Long id);
+    
+    /**
+     * Get the "id" department in given location
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    Optional<DepartmentDTO> findOneByIdAndLocation(Long id, Long locationId);
+
 }

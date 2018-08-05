@@ -3,14 +3,11 @@ package inventory.web.rest;
 import inventory.InmarApp;
 
 import inventory.domain.Subcategory;
-import inventory.domain.Category;
 import inventory.repository.SubcategoryRepository;
 import inventory.service.SubcategoryService;
 import inventory.service.dto.SubcategoryDTO;
 import inventory.service.mapper.SubcategoryMapper;
 import inventory.web.rest.errors.ExceptionTranslator;
-import inventory.service.dto.SubcategoryCriteria;
-import inventory.service.SubcategoryQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -63,9 +60,6 @@ public class SubcategoryResourceIntTest {
     private SubcategoryService subcategoryService;
 
     @Autowired
-    private SubcategoryQueryService subcategoryQueryService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -84,7 +78,7 @@ public class SubcategoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final SubcategoryResource subcategoryResource = new SubcategoryResource(subcategoryService, subcategoryQueryService);
+        final SubcategoryResource subcategoryResource = new SubcategoryResource(subcategoryService);
         this.restSubcategoryMockMvc = MockMvcBuilders.standaloneSetup(subcategoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -218,126 +212,6 @@ public class SubcategoryResourceIntTest {
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
-
-    @Test
-    @Transactional
-    public void getAllSubcategoriesByNameIsEqualToSomething() throws Exception {
-        // Initialize the database
-        subcategoryRepository.saveAndFlush(subcategory);
-
-        // Get all the subcategoryList where name equals to DEFAULT_NAME
-        defaultSubcategoryShouldBeFound("name.equals=" + DEFAULT_NAME);
-
-        // Get all the subcategoryList where name equals to UPDATED_NAME
-        defaultSubcategoryShouldNotBeFound("name.equals=" + UPDATED_NAME);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSubcategoriesByNameIsInShouldWork() throws Exception {
-        // Initialize the database
-        subcategoryRepository.saveAndFlush(subcategory);
-
-        // Get all the subcategoryList where name in DEFAULT_NAME or UPDATED_NAME
-        defaultSubcategoryShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
-
-        // Get all the subcategoryList where name equals to UPDATED_NAME
-        defaultSubcategoryShouldNotBeFound("name.in=" + UPDATED_NAME);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSubcategoriesByNameIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        subcategoryRepository.saveAndFlush(subcategory);
-
-        // Get all the subcategoryList where name is not null
-        defaultSubcategoryShouldBeFound("name.specified=true");
-
-        // Get all the subcategoryList where name is null
-        defaultSubcategoryShouldNotBeFound("name.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllSubcategoriesByStatusIsEqualToSomething() throws Exception {
-        // Initialize the database
-        subcategoryRepository.saveAndFlush(subcategory);
-
-        // Get all the subcategoryList where status equals to DEFAULT_STATUS
-        defaultSubcategoryShouldBeFound("status.equals=" + DEFAULT_STATUS);
-
-        // Get all the subcategoryList where status equals to UPDATED_STATUS
-        defaultSubcategoryShouldNotBeFound("status.equals=" + UPDATED_STATUS);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSubcategoriesByStatusIsInShouldWork() throws Exception {
-        // Initialize the database
-        subcategoryRepository.saveAndFlush(subcategory);
-
-        // Get all the subcategoryList where status in DEFAULT_STATUS or UPDATED_STATUS
-        defaultSubcategoryShouldBeFound("status.in=" + DEFAULT_STATUS + "," + UPDATED_STATUS);
-
-        // Get all the subcategoryList where status equals to UPDATED_STATUS
-        defaultSubcategoryShouldNotBeFound("status.in=" + UPDATED_STATUS);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSubcategoriesByStatusIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        subcategoryRepository.saveAndFlush(subcategory);
-
-        // Get all the subcategoryList where status is not null
-        defaultSubcategoryShouldBeFound("status.specified=true");
-
-        // Get all the subcategoryList where status is null
-        defaultSubcategoryShouldNotBeFound("status.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllSubcategoriesByCategoryIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Category category = CategoryResourceIntTest.createEntity(em);
-        em.persist(category);
-        em.flush();
-        subcategory.setCategory(category);
-        subcategoryRepository.saveAndFlush(subcategory);
-        Long categoryId = category.getId();
-
-        // Get all the subcategoryList where category equals to categoryId
-        defaultSubcategoryShouldBeFound("categoryId.equals=" + categoryId);
-
-        // Get all the subcategoryList where category equals to categoryId + 1
-        defaultSubcategoryShouldNotBeFound("categoryId.equals=" + (categoryId + 1));
-    }
-
-    /**
-     * Executes the search, and checks that the default entity is returned
-     */
-    private void defaultSubcategoryShouldBeFound(String filter) throws Exception {
-        restSubcategoryMockMvc.perform(get("/api/subcategories?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(subcategory.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
-    }
-
-    /**
-     * Executes the search, and checks that the default entity is not returned
-     */
-    private void defaultSubcategoryShouldNotBeFound(String filter) throws Exception {
-        restSubcategoryMockMvc.perform(get("/api/subcategories?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$").isEmpty());
-    }
-
     @Test
     @Transactional
     public void getNonExistingSubcategory() throws Exception {

@@ -4,17 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 import inventory.service.SubcategoryService;
 import inventory.web.rest.errors.BadRequestAlertException;
 import inventory.web.rest.util.HeaderUtil;
-import inventory.web.rest.util.PaginationUtil;
 import inventory.service.dto.SubcategoryDTO;
-import inventory.service.dto.SubcategoryCriteria;
-import inventory.service.SubcategoryQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,11 +31,8 @@ public class SubcategoryResource {
 
     private final SubcategoryService subcategoryService;
 
-    private final SubcategoryQueryService subcategoryQueryService;
-
-    public SubcategoryResource(SubcategoryService subcategoryService, SubcategoryQueryService subcategoryQueryService) {
+    public SubcategoryResource(SubcategoryService subcategoryService) {
         this.subcategoryService = subcategoryService;
-        this.subcategoryQueryService = subcategoryQueryService;
     }
 
     /**
@@ -90,17 +80,13 @@ public class SubcategoryResource {
     /**
      * GET  /subcategories : get all the subcategories.
      *
-     * @param pageable the pagination information
-     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of subcategories in body
      */
     @GetMapping("/subcategories")
     @Timed
-    public ResponseEntity<List<SubcategoryDTO>> getAllSubcategories(SubcategoryCriteria criteria, Pageable pageable) {
-        log.debug("REST request to get Subcategories by criteria: {}", criteria);
-        Page<SubcategoryDTO> page = subcategoryQueryService.findByCriteria(criteria, pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/subcategories");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    public List<SubcategoryDTO> getAllSubcategories() {
+        log.debug("REST request to get all Subcategories");
+        return subcategoryService.findAll();
     }
 
     /**
@@ -129,5 +115,31 @@ public class SubcategoryResource {
         log.debug("REST request to delete Subcategory : {}", id);
         subcategoryService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+    
+    /**
+     * GET  /subcategories : get all the subcategories by parent params
+     *
+     * @return the ResponseEntity with status 200 (OK) and the list of subcategories in body
+     */
+    @GetMapping("/locations/{locationId}/departments/{departmentId}/categories/{categoryId}/subcategories")
+    @Timed
+    public List<SubcategoryDTO> getAllSubcategoriesByParentIds(@PathVariable Long locationId, @PathVariable Long departmentId, @PathVariable Long categoryId) {
+        log.debug("REST request to get all Subcategories");
+        return subcategoryService.findAllByLocationAndDepartmentAndCategory(locationId, departmentId, categoryId);
+    }
+
+    /**
+     * GET  /subcategories/:id : get the "id" subcategory by parent params
+     *
+     * @param id the id of the subcategoryDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the subcategoryDTO, or with status 404 (Not Found)
+     */
+    @GetMapping("/locations/{locationId}/departments/{departmentId}/categories/{categoryId}/subcategories/{id}")
+    @Timed
+    public ResponseEntity<SubcategoryDTO> ByParentIds(@PathVariable Long locationId, @PathVariable Long departmentId, @PathVariable Long categoryId,@PathVariable Long id) {
+        log.debug("REST request to get Subcategory : {}", id);
+        Optional<SubcategoryDTO> subcategoryDTO = subcategoryService.findOneByLocationAndDepartmentAndCategory(locationId, departmentId, categoryId,id);
+        return ResponseUtil.wrapOrNotFound(subcategoryDTO);
     }
 }

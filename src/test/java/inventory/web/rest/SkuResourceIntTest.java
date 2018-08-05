@@ -3,14 +3,11 @@ package inventory.web.rest;
 import inventory.InmarApp;
 
 import inventory.domain.Sku;
-import inventory.domain.Subcategory;
 import inventory.repository.SkuRepository;
 import inventory.service.SkuService;
 import inventory.service.dto.SkuDTO;
 import inventory.service.mapper.SkuMapper;
 import inventory.web.rest.errors.ExceptionTranslator;
-import inventory.service.dto.SkuCriteria;
-import inventory.service.SkuQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -69,9 +66,6 @@ public class SkuResourceIntTest {
     private SkuService skuService;
 
     @Autowired
-    private SkuQueryService skuQueryService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -90,7 +84,7 @@ public class SkuResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final SkuResource skuResource = new SkuResource(skuService, skuQueryService);
+        final SkuResource skuResource = new SkuResource(skuService);
         this.restSkuMockMvc = MockMvcBuilders.standaloneSetup(skuResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -270,206 +264,6 @@ public class SkuResourceIntTest {
             .andExpect(jsonPath("$.barcode").value(DEFAULT_BARCODE.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
-
-    @Test
-    @Transactional
-    public void getAllSkusBySkuidIsEqualToSomething() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where skuid equals to DEFAULT_SKUID
-        defaultSkuShouldBeFound("skuid.equals=" + DEFAULT_SKUID);
-
-        // Get all the skuList where skuid equals to UPDATED_SKUID
-        defaultSkuShouldNotBeFound("skuid.equals=" + UPDATED_SKUID);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusBySkuidIsInShouldWork() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where skuid in DEFAULT_SKUID or UPDATED_SKUID
-        defaultSkuShouldBeFound("skuid.in=" + DEFAULT_SKUID + "," + UPDATED_SKUID);
-
-        // Get all the skuList where skuid equals to UPDATED_SKUID
-        defaultSkuShouldNotBeFound("skuid.in=" + UPDATED_SKUID);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusBySkuidIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where skuid is not null
-        defaultSkuShouldBeFound("skuid.specified=true");
-
-        // Get all the skuList where skuid is null
-        defaultSkuShouldNotBeFound("skuid.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusByNameIsEqualToSomething() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where name equals to DEFAULT_NAME
-        defaultSkuShouldBeFound("name.equals=" + DEFAULT_NAME);
-
-        // Get all the skuList where name equals to UPDATED_NAME
-        defaultSkuShouldNotBeFound("name.equals=" + UPDATED_NAME);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusByNameIsInShouldWork() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where name in DEFAULT_NAME or UPDATED_NAME
-        defaultSkuShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
-
-        // Get all the skuList where name equals to UPDATED_NAME
-        defaultSkuShouldNotBeFound("name.in=" + UPDATED_NAME);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusByNameIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where name is not null
-        defaultSkuShouldBeFound("name.specified=true");
-
-        // Get all the skuList where name is null
-        defaultSkuShouldNotBeFound("name.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusByBarcodeIsEqualToSomething() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where barcode equals to DEFAULT_BARCODE
-        defaultSkuShouldBeFound("barcode.equals=" + DEFAULT_BARCODE);
-
-        // Get all the skuList where barcode equals to UPDATED_BARCODE
-        defaultSkuShouldNotBeFound("barcode.equals=" + UPDATED_BARCODE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusByBarcodeIsInShouldWork() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where barcode in DEFAULT_BARCODE or UPDATED_BARCODE
-        defaultSkuShouldBeFound("barcode.in=" + DEFAULT_BARCODE + "," + UPDATED_BARCODE);
-
-        // Get all the skuList where barcode equals to UPDATED_BARCODE
-        defaultSkuShouldNotBeFound("barcode.in=" + UPDATED_BARCODE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusByBarcodeIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where barcode is not null
-        defaultSkuShouldBeFound("barcode.specified=true");
-
-        // Get all the skuList where barcode is null
-        defaultSkuShouldNotBeFound("barcode.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusByStatusIsEqualToSomething() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where status equals to DEFAULT_STATUS
-        defaultSkuShouldBeFound("status.equals=" + DEFAULT_STATUS);
-
-        // Get all the skuList where status equals to UPDATED_STATUS
-        defaultSkuShouldNotBeFound("status.equals=" + UPDATED_STATUS);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusByStatusIsInShouldWork() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where status in DEFAULT_STATUS or UPDATED_STATUS
-        defaultSkuShouldBeFound("status.in=" + DEFAULT_STATUS + "," + UPDATED_STATUS);
-
-        // Get all the skuList where status equals to UPDATED_STATUS
-        defaultSkuShouldNotBeFound("status.in=" + UPDATED_STATUS);
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusByStatusIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        skuRepository.saveAndFlush(sku);
-
-        // Get all the skuList where status is not null
-        defaultSkuShouldBeFound("status.specified=true");
-
-        // Get all the skuList where status is null
-        defaultSkuShouldNotBeFound("status.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllSkusBySubcategoryIsEqualToSomething() throws Exception {
-        // Initialize the database
-        Subcategory subcategory = SubcategoryResourceIntTest.createEntity(em);
-        em.persist(subcategory);
-        em.flush();
-        sku.setSubcategory(subcategory);
-        skuRepository.saveAndFlush(sku);
-        Long subcategoryId = subcategory.getId();
-
-        // Get all the skuList where subcategory equals to subcategoryId
-        defaultSkuShouldBeFound("subcategoryId.equals=" + subcategoryId);
-
-        // Get all the skuList where subcategory equals to subcategoryId + 1
-        defaultSkuShouldNotBeFound("subcategoryId.equals=" + (subcategoryId + 1));
-    }
-
-    /**
-     * Executes the search, and checks that the default entity is returned
-     */
-    private void defaultSkuShouldBeFound(String filter) throws Exception {
-        restSkuMockMvc.perform(get("/api/skus?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(sku.getId().intValue())))
-            .andExpect(jsonPath("$.[*].skuid").value(hasItem(DEFAULT_SKUID.toString())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].barcode").value(hasItem(DEFAULT_BARCODE.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
-    }
-
-    /**
-     * Executes the search, and checks that the default entity is not returned
-     */
-    private void defaultSkuShouldNotBeFound(String filter) throws Exception {
-        restSkuMockMvc.perform(get("/api/skus?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$").isEmpty());
-    }
-
     @Test
     @Transactional
     public void getNonExistingSku() throws Exception {

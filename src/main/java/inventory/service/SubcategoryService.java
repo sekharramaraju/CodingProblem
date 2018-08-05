@@ -2,9 +2,7 @@ package inventory.service;
 
 import inventory.service.dto.SubcategoryDTO;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,10 +21,9 @@ public interface SubcategoryService {
     /**
      * Get all the subcategories.
      *
-     * @param pageable the pagination information
      * @return the list of entities
      */
-    Page<SubcategoryDTO> findAll(Pageable pageable);
+    List<SubcategoryDTO> findAll();
 
 
     /**
@@ -43,4 +40,21 @@ public interface SubcategoryService {
      * @param id the id of the entity
      */
     void delete(Long id);
+    
+    /**
+     * Get all the subcategories by location, department and category
+     *
+     * @return the list of entities
+     */
+    List<SubcategoryDTO> findAllByLocationAndDepartmentAndCategory(Long locationId, Long departmentId, Long categoryId);
+
+
+    /**
+     * Get the "id" subcategory.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    Optional<SubcategoryDTO> findOneByLocationAndDepartmentAndCategory(Long locationId, Long departmentId, Long categoryId,Long id);
+    
 }

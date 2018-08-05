@@ -2,9 +2,7 @@ package inventory.service;
 
 import inventory.service.dto.CategoryDTO;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -23,10 +21,9 @@ public interface CategoryService {
     /**
      * Get all the categories.
      *
-     * @param pageable the pagination information
      * @return the list of entities
      */
-    Page<CategoryDTO> findAll(Pageable pageable);
+    List<CategoryDTO> findAll();
 
 
     /**
@@ -43,4 +40,21 @@ public interface CategoryService {
      * @param id the id of the entity
      */
     void delete(Long id);
+    
+    /**
+     * Get all the categories by locationid
+     *
+     * @return the list of entities
+     */
+    List<CategoryDTO> findAllByLocationAndDepartment(Long locationId, Long departmentId);
+
+
+    /**
+     * Get the "id" category by location and department
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    Optional<CategoryDTO> findOneByLocationAndDepartment(Long locationId, Long departmentId, Long id);
+    
 }
