@@ -4,3 +4,4 @@ export * from './sku-delete-dialog.component';
 export * from './sku-detail.component';
 export * from './sku.component';
 export * from './sku.route';
+export * from './sku-search.component';

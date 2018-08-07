@@ -8,6 +8,7 @@ import {
     SkuUpdateComponent,
     SkuDeletePopupComponent,
     SkuDeleteDialogComponent,
+    SkuSearchComponent,
     skuRoute,
     skuPopupRoute
 } from './';
@@ -16,8 +17,8 @@ const ENTITY_STATES = [...skuRoute, ...skuPopupRoute];
 
 @NgModule({
     imports: [InmarSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [SkuComponent, SkuDetailComponent, SkuUpdateComponent, SkuDeleteDialogComponent, SkuDeletePopupComponent],
-    entryComponents: [SkuComponent, SkuUpdateComponent, SkuDeleteDialogComponent, SkuDeletePopupComponent],
+    declarations: [SkuComponent, SkuDetailComponent, SkuUpdateComponent, SkuDeleteDialogComponent, SkuDeletePopupComponent, SkuSearchComponent],
+    entryComponents: [SkuComponent, SkuUpdateComponent, SkuDeleteDialogComponent, SkuDeletePopupComponent, SkuSearchComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class InmarSkuModule {}

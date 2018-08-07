@@ -1,0 +1,80 @@
+<div>
+    <h2 id="page-heading">
+        <span>Search Skus</span>
+    </h2>
+             <form name="searchForm" role="form" novalidate (ngSubmit)="search()" #searchForm="ngForm">
+                <div class="table-responsive">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                    <label class="form-control-label" for="field_name">Location</label>
+                                <input type="text" class="form-control" name="name" id="field_name"
+                                    [(ngModel)]="searchSkus.locationName" />
+                            </td>
+                            <td></td>
+
+                            <td>
+                                <label class="form-control-label" for="field_name">Department</label>
+                                <input type="text" class="form-control" name="name" id="field_name"
+                                [(ngModel)]="searchSkus.departmentName" />
+                            </td>
+                            <td></td>
+                            <td>
+                                <label class="form-control-label" for="field_name">Category</label>
+                                <input type="text" class="form-control" name="name" id="field_name"
+                                [(ngModel)]="searchSkus.categoryName" />
+                            </td>
+                            <td></td>
+                            <td>
+                                <label class="form-control-label" for="field_name">Subcategory</label>
+                                <input type="text" class="form-control" name="name" id="field_name"
+                                [(ngModel)]="searchSkus.subcategoryName" />
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                <br>
+                                <label class="form-control-label" for="field_name"> </label>
+                               <button type="submit" id="search-sku" class="btn btn-primary">
+                                    <fa-icon [icon]="'search'"></fa-icon>&nbsp;<span>Search</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            </form>
+    
+    <br/>
+    <div class="table-responsive" *ngIf="skus">
+        <table class="table table-striped">
+            <thead> 
+            <tr>
+            <th><span>ID</span></th>
+            <th><span>Skuid</span></th>
+            <th><span>Name</span></th>
+            <th><span>Barcode</span></th>
+            <th><span>Status</span></th>
+            <th><span>Subcategory</span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let sku of skus ;trackBy: trackId">
+                <td><a [routerLink]="['/sku', sku.id, 'view' ]">{{sku.id}}</a></td>
+                <td>{{sku.skuid}}</td>
+                <td>{{sku.name}}</td>
+                <td>{{sku.barcode}}</td>
+                <td>{{sku.status}}</td>
+                <td>
+                    <div *ngIf="sku.subcategoryId">
+                        <a [routerLink]="['../subcategory', sku.subcategoryId , 'view' ]" >{{sku.subcategoryName}}</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
