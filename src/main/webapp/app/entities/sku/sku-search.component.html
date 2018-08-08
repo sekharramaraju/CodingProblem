@@ -8,27 +8,27 @@
                     <tbody>
                         <tr>
                             <td>
-                                    <label class="form-control-label" for="field_name">Location</label>
-                                <input type="text" class="form-control" name="name" id="field_name"
+                                <label class="form-control-label" for="field_name">Location</label>
+                                <input type="text" class="form-control" name="location" id="field_name"
                                     [(ngModel)]="searchSkus.locationName" />
                             </td>
                             <td></td>
 
                             <td>
                                 <label class="form-control-label" for="field_name">Department</label>
-                                <input type="text" class="form-control" name="name" id="field_name"
+                                <input type="text" class="form-control" name="department" id="field_name"
                                 [(ngModel)]="searchSkus.departmentName" />
                             </td>
                             <td></td>
                             <td>
                                 <label class="form-control-label" for="field_name">Category</label>
-                                <input type="text" class="form-control" name="name" id="field_name"
+                                <input type="text" class="form-control" name="category" id="field_name"
                                 [(ngModel)]="searchSkus.categoryName" />
                             </td>
                             <td></td>
                             <td>
                                 <label class="form-control-label" for="field_name">Subcategory</label>
-                                <input type="text" class="form-control" name="name" id="field_name"
+                                <input type="text" class="form-control" name="subcategory" id="field_name"
                                 [(ngModel)]="searchSkus.subcategoryName" />
                             </td>
                             <td>
@@ -70,7 +70,7 @@
                 <td>{{sku.status}}</td>
                 <td>
                     <div *ngIf="sku.subcategoryId">
-                        <a [routerLink]="['../subcategory', sku.subcategoryId , 'view' ]" >{{sku.subcategoryName}}</a>
+                        <a [routerLink]="['../../subcategory', sku.subcategoryId , 'view' ]" >{{sku.subcategoryName}}</a>
                     </div>
                 </td>
             </tr>

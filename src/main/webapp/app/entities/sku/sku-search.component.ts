@@ -16,7 +16,7 @@ export class SkuSearchComponent implements OnInit, OnDestroy {
     skus: ISku[];
     currentAccount: any;
     eventSubscriber: Subscription;
-    searchSkus: ISearch;
+    searchSkus: ISearch = {};
 
     constructor(
         private skuService: SkuService,
@@ -24,11 +24,10 @@ export class SkuSearchComponent implements OnInit, OnDestroy {
         private eventManager: JhiEventManager,
         private principal: Principal
     ) {
-        this.searchSkus = {};
     }
 
     loadAll() {
-        this.skuService.query().subscribe(
+        this.skuService.search(this.searchSkus).subscribe(
             (res: HttpResponse<ISku[]>) => {
                 this.skus = res.body;
             },

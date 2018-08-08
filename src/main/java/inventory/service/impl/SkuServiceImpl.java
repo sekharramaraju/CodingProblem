@@ -3,11 +3,12 @@ package inventory.service.impl;
 import inventory.service.SkuService;
 import inventory.domain.Sku;
 import inventory.repository.SkuRepository;
+import inventory.service.dto.SearchRequestDTO;
 import inventory.service.dto.SkuDTO;
 import inventory.service.mapper.SkuMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,4 +87,49 @@ public class SkuServiceImpl implements SkuService {
         log.debug("Request to delete Sku : {}", id);
         skuRepository.deleteById(id);
     }
+    
+    /**
+     * Get all the skus.
+     *
+     * @return the list of entities
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<SkuDTO> findAllBySearchParams(SearchRequestDTO searchRequestDTO) {
+        log.debug("Request to get all Skus");
+        
+        String locationName = "%";
+        String departmentName = "%";
+        String categoryName = "%";
+        String subcategoryName = "%";
+        
+        if(( searchRequestDTO.getLocationName() != null) && (0 != searchRequestDTO.getLocationName().compareTo("null")))
+        {
+        	locationName = "%" + searchRequestDTO.getLocationName() + "%";
+        }
+        
+        if((searchRequestDTO.getDepartmentName() != null) && (0 != searchRequestDTO.getDepartmentName().compareTo("null")))
+        {
+        	departmentName = "%" + searchRequestDTO.getDepartmentName() + "%";
+        }
+        
+        if((searchRequestDTO.getCategoryName() != null) && (0 != searchRequestDTO.getCategoryName().compareTo("null")))
+        {
+        	categoryName = "%" + searchRequestDTO.getCategoryName() + "%";
+        }
+        
+        if((searchRequestDTO.getSubcategoryName() != null) && (0 != searchRequestDTO.getSubcategoryName().compareTo("null")))
+        {
+        	subcategoryName = "%" + searchRequestDTO.getSubcategoryName() + "%";
+        }
+        
+        String qu = "SELECT sk FROM Sku sk, Subcategory su  where su.id = sk.subcategory.id and sk.subcategory.name like" + subcategoryName + "and sk.subcategory.category.name like :" + categoryName + "and sk.subcategory.category.department.name like :" + departmentName +" and sk.subcategory.category.department.location.name like :" + locationName + ")";
+
+        log.debug("Query is "+ qu);
+        
+        return skuRepository.findAllBySearchPrams(locationName, departmentName, categoryName, subcategoryName).stream()
+            .map(skuMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
+    }
+
 }

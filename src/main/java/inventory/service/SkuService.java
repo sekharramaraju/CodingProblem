@@ -1,5 +1,6 @@
 package inventory.service;
 
+import inventory.service.dto.SearchRequestDTO;
 import inventory.service.dto.SkuDTO;
 
 import java.util.List;
@@ -40,4 +41,11 @@ public interface SkuService {
      * @param id the id of the entity
      */
     void delete(Long id);
+    
+    /**
+     * Get all the skus by search Params
+     *
+     * @return the list of entities
+     */
+    List<SkuDTO> findAllBySearchParams(SearchRequestDTO searchRequestDTO);
 }

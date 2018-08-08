@@ -12,6 +12,7 @@ import { LoginModalService, Principal, Account } from 'app/core';
 export class HomeComponent implements OnInit {
     account: Account;
     modalRef: NgbModalRef;
+    images: Array<string>;
 
     constructor(private principal: Principal, private loginModalService: LoginModalService, private eventManager: JhiEventManager) {}
 
@@ -20,6 +21,11 @@ export class HomeComponent implements OnInit {
             this.account = account;
         });
         this.registerAuthenticationSuccess();
+        this.images = [
+                    '../../content/images/collaboration-meeting-736x414.jpg',
+                    '../../content/images/Inmar-Atrium-BG-blur-736x414.jpg',
+                    '../../content/images/Inmar-Warehouse-736x414.jpg'
+                    ];
     }
 
     registerAuthenticationSuccess() {

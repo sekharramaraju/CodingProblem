@@ -4,32 +4,35 @@ Main page styles
 
 .collaboration {
     display: inline-block;
-    width: 347px;
-    height: 497px;
+    margin: auto;
+    width: 100%;
+    height: 714px;
+    border:0px;
     background: url('../../content/images/collaboration-meeting-736x414.jpg') no-repeat center top;
     background-size: contain;
+    
 }
 
 .Atrium {
     display: inline-block;
-    width: 736px;
-    height: 414px;
+    width: 100%;
+    height: 714px;
     background: url('../../content/images/Inmar-Atrium-BG-blur-736x414.jpg') no-repeat center top;
     background-size: contain;
 }
 
 .warehouse {
     display: inline-block;
-    width: 736px;
-    height: 414px;
+    width: 100%;
+    height: 714px;
     background: url('../../content/images/Inmar-Warehouse-736x414.jpg') no-repeat center top;
     background-size: contain;
 }
 
 .pharmacy {
     display: inline-block;
-    width: 736px;
-    height: 414px;
+    width: 100%;
+    height: 714px;
     background: url('../../content/images/Pharmacy-90128408-736x414.jpg') no-repeat center top;
     background-size: contain;
 }
