@@ -5,6 +5,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { Principal } from 'app/core';
 import  *  as d3 from 'd3';
 import { HierarchyPointNode } from 'd3';
+import { TreeNode } from './../shared/model/treenode.model';
 
 @Component({
     selector: 'jhi-chart-tree',
@@ -26,36 +27,43 @@ export class TreeChartComponent implements OnInit, OnDestroy {
     private treeLayout;
     private root;
     private tree;
+    private tableData =[
+        {"locationName": "Perimeter", "departmentName": "Bakery", "categoryName": "Bakery Bread", "subcategoryName" : "Bagels"},
+        {"locationName": "Perimeter", "departmentName": "Bakery", "categoryName": "Bakery Bread", "subcategoryName" : "Baking or Breading Products"},
+        {"locationName": "Center",    "departmentName": "Dairy", "categoryName": "Cheese", "subcategoryName" : "Cheese Sauce"},
+    ]
     
+    treeJson: TreeNode;
+
     currentAccount: any;
     eventSubscriber: Subscription;
-
-     data = {
-        "name": "A1",
-        "children": [
-          {
-            "name": "B1",
-            "children": [
-              {
-                "name": "C1",
-                "value": 100
-              },
-              {
-                "name": "C2",
-                "value": 300
-              },
-              {
-                "name": "C3",
-                "value": 200
-              }
-            ]
-          },
-          {
-            "name": "B2",
-            "value": 200
-          }
-        ]
-      };
+    data : any[];
+    //  data = {
+    //     "name": "A1",
+    //     "children": [
+    //       {
+    //         "name": "B1",
+    //         "children": [
+    //           {
+    //             "name": "C1",
+    //             "value": 100
+    //           },
+    //           {
+    //             "name": "C2",
+    //             "value": 300
+    //           },
+    //           {
+    //             "name": "C3",
+    //             "value": 200
+    //           }
+    //         ]
+    //       },
+    //       {
+    //         "name": "B2",
+    //         "value": 200
+    //       }
+    //     ]
+    //   };
 
 
     constructor(
@@ -69,6 +77,9 @@ export class TreeChartComponent implements OnInit, OnDestroy {
         this.principal.identity().then(account => {
             this.currentAccount = account;
         });
+
+        this.setDefaultValuesToTreeData();
+        this.convertToJson();
         this.buildChart();
      }
 
@@ -82,7 +93,7 @@ export class TreeChartComponent implements OnInit, OnDestroy {
 
     buildChart()
     {
-        this.root = d3.hierarchy(this.data, (d) => d.children);;
+        this.root = d3.hierarchy(this.treeJson, (d) => d.children);;
 
         this.root.x0 = this.height / 2;
         this.root.y0 = 0;
@@ -214,4 +225,103 @@ export class TreeChartComponent implements OnInit, OnDestroy {
     
         return path;
     }
+
+    convertToJson() {
+       this.data = this.tableData.map(this.createJsonData.bind(this));
+    }
+
+    setDefaultValuesToTreeData()
+    {
+        let locationNode : TreeNode;
+        let categoryNode : TreeNode;
+        let departmentNode : TreeNode;
+        let subcategoryNode : TreeNode;
+
+        this.treeJson = new TreeNode();
+        this.treeJson.name = "_MASTER_HIERARCHY";
+
+        locationNode = new TreeNode();
+        locationNode.name = "Location";
+
+        departmentNode = new TreeNode()
+        departmentNode.name = "Department";
+
+        categoryNode = new TreeNode()
+        categoryNode.name = "Category";
+
+        subcategoryNode = new TreeNode();
+        subcategoryNode.name = "SubCategory";
+
+        categoryNode.children.push(subcategoryNode);
+        departmentNode.children.push(categoryNode);
+        locationNode.children.push(departmentNode);
+        this.treeJson.children.push(locationNode);
+    }
+    createJsonData(row)
+    {
+        let locationNode = this.treeJson.children.find( function(d) { return d.name == row.locationName;});
+        if (locationNode == null){
+            locationNode = this.addNewLocation(row);
+            this.treeJson.children.push(locationNode);
+        }
+        else
+        {
+            let departmentNode = locationNode.children.find (function(d) { return d.name == row.departmentName;});
+            if (departmentNode == null){
+                departmentNode = this.addNewDepartment(row);
+                locationNode.children.push(departmentNode);
+            }
+            else
+            {
+                let categoryNode = departmentNode.children.find( function (d) { return d.name == row.categoryName; });
+                if (categoryNode == null) {
+                    categoryNode = this.addNewCategoryNode(row);
+                    departmentNode.children.push(categoryNode);
+                }
+                else
+                {
+                    let subcategoryNode = categoryNode.children.find( function (d) { return d.name == row.subcategoryName;});
+                    if (subcategoryNode == null)
+                    {
+                        subcategoryNode = this.addNewSubCategoryNode(row);
+                        categoryNode.children.push(subcategoryNode);
+                    }
+                }
+            }
+
+        }
+
+        console.log ("dd is  " + row.locationName);
+        return row
+    } 
+
+    addNewLocation(row)
+    {
+        let location = new TreeNode();
+        location.name = row.locationName;
+        location.children.push(this.addNewDepartment(row));
+        return location;
+    }
+
+    addNewDepartment(row)
+    {
+        let dept = new TreeNode();
+        dept.name = row.departmentName;
+        dept.children.push(this.addNewCategoryNode(row));
+        return dept;
+    }
+
+    addNewCategoryNode(row) {
+        let category = new TreeNode();
+        category.name = row.categoryName;
+        category.children.push(this.addNewSubCategoryNode(row));
+        return category;
+    }
+
+    addNewSubCategoryNode(row) {
+        let subcate = new TreeNode();
+        subcate.name = row.subcategoryName;
+        return subcate;
+    }
+
 }
