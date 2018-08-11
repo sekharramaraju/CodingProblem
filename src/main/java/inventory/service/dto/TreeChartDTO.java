@@ -11,15 +11,15 @@ public class TreeChartDTO implements Serializable {
 	
 	private String departmentName;
 	
-	private String categroyName;
+	private String categoryName;
 	
-	private String subcategroyName;
+	private String subcategoryName;
 	
 	public TreeChartDTO( String subcategory, String category, String department, String location){
 		this.locationName = location;
 		this.departmentName = department;
-		this. categroyName = category;
-		this.subcategroyName = subcategory;
+		this. categoryName = category;
+		this.subcategoryName = subcategory;
 	}
 
 	public String getLocationName() {
@@ -38,21 +38,31 @@ public class TreeChartDTO implements Serializable {
 		this.departmentName = departmentName;
 	}
 
-	public String getCategroyName() {
-		return categroyName;
+	public String getCategoryName() {
+		return categoryName;
 	}
 
-	public void setCategroyName(String categroyName) {
-		this.categroyName = categroyName;
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
-	public String getSubcategroyName() {
-		return subcategroyName;
+	public String getSubcategoryName() {
+		return subcategoryName;
 	}
 
-	public void setSubcategroyName(String subcategroyName) {
-		this.subcategroyName = subcategroyName;
+	public void setSubcategroyName(String subcategoryName) {
+		this.subcategoryName = subcategoryName;
 	}
 	
+	 @Override
+	  public String toString() {
+	        return "SubcategoryDTO{" +
+	            "locationName=" + getLocationName() +
+	            ", departmentName='" + getDepartmentName() + "'" +
+	            ", categoryName='" + getCategoryName() + "'" +
+	            ", subcategoryName=" + getSubcategoryName() +
+	            
+	            "}";
+	    }
 	
 }

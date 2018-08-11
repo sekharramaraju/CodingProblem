@@ -61,6 +61,15 @@
                     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->
                 </ul>
             </li>
+            
+            <li *ngSwitchCase="true" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a class="nav-link" routerLink="../chart" (click)="collapseNavbar()">
+                    <span>
+                        <fa-icon [icon]="'fa fa-asterisk'"></fa-icon>
+                        <span>InfoGraphic</span>
+                    </span>
+                </a>
+            </li>
 
             <li *ngSwitchCase="true" class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="../sku/search" (click)="collapseNavbar()">
