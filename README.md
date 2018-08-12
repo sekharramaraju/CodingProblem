@@ -1,166 +1,128 @@
 # inmar
-This application was generated using JHipster 5.1.0, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v5.1.0](https://www.jhipster.tech/documentation-archive/v5.1.0).
+This appilicaiton to perform the CRUD operations on inventory data models and display the infographic tree of the data structures.
+This document describes the environment setup for development, deployment and testing activities. 
+The applcation is developed using the technologes Java, MySql and Angualr6.
 
 ## Development
+The applicaiton is developed on Windows OS and giving installation instruction according to Windows OS.
 
-Before you can build this project, you must install and configure the following dependencies on your machine:
+### Software Requirements
 
-1. [Node.js][]: We use Node to run a development web server and build the project.
-   Depending on your system, you can install Node either from source or as a pre-packaged bundle.
-2. [Yarn][]: We use Yarn to manage Node dependencies.
-   Depending on your system, you can install Yarn either from source or as a pre-packaged bundle.
+1. Java (min v1.8)
+2. Node.js
+3. Yarn
+4. JHipster
+5. MySql
 
-After installing Node, you should be able to run the following command to install development tools.
-You will only need to run this command when dependencies change in [package.json](package.json).
+####Installation Instructions
 
-    yarn install
+1. Java 8: Download latest Java from Oracle and follow the installation instructions specified in the installation package. Make sure that JAVA_HOME is set. Open command prompt and execute
 
-We use yarn scripts and [Webpack][] as our build system.
+    java -version
 
-Run the following commands in two separate terminals to create a blissful development experience where your browser
-auto-refreshes when files change on your hard drive.
+    to make sure java is installed properly.
+    
+2. [Node.js][]: Node is used to run a development web server.
 
-    ./mvnw
+3. [Yarn][]: Yarn is used to manage the node dependencies. Download the yarn form https://yarnpkg.com/en/docs/install#windows-stable.
+    
+    yarn install v1.6.0
+
+4. JHipster: Execute the following statements to install JHipster.
+
+    npm install -g yo@2.0.4
+    npm install -g generator-jhipster@5.1.0
+    
+    For more about Jhipster installation refer to documentation at https://www.jhipster.tech/documentation-archive/v5.1.0.
+
+5. MySql : MySql is used as database to store the data. Install MySql from https://www.mysql.com/downloads/
+
+### Building the applicatin
+
+1. The application is using the MySql default username and password to connect to the db. Execute MySql and create inmar db.  
+
+2. To build the application, first install all dependencis by executing 
+    
+    Yarn install
+    
+Maven is used to build the project for debug
+
+    mvnw
+ 
+ for productin
+    
+    mvnw -Pprod
+
+This will build the applicaiton and hosts the applicaiton in local webserver in port 8080. User http://localhost:8080 to browse and verify the applicaiton.
+
+
+### Updating the applicaiton 
+
+As JHipster is used as development environment. JHipster commnads can be used to create the enitities and services to the applicaiton. 
+For example to create the entity use:
+
+    jhipster entity <entityname>
+
+There will be series of questions to answer,where jhipster will create the enity and UI(based on the selected options)
+    
+The applicaiton is using Angular 6 v6.0.0, to build the UI components. Once the UI got changed or updated execute following command to build the UI.
+
     yarn start
 
-[Yarn][] is also used to manage CSS and JavaScript dependencies used in this application. You can upgrade dependencies by
-specifying a newer version in [package.json](package.json). You can also run `yarn update` and `yarn install` to manage dependencies.
-Add the `help` flag on any command to see how you can use it. For example, `yarn help update`.
+## Deployment
+This section provides the iformation to deploy the applicaiton in Pivotal Webservices. 
 
-The `yarn run` command will list all of the scripts available to run for this project.
+1. Register a account in https://pivotal.io/platform
+2. Download and install CF client from Pivotal
 
-### Service workers
+#### Login to pivotal
 
-Service workers are commented by default, to enable them please uncomment the following code.
+3. Open command prompt and browse to applicaiton root directory and login to cloudfoundry using
 
-* The service worker registering script in index.html
+    cf login -u username -p password
+    
+4. create a MySql db service
 
-```html
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker
-        .register('./service-worker.js')
-        .then(function() { console.log('Service Worker Registered'); });
-    }
-</script>
-```
+    cf create-service cleardb spark inmar
 
-Note: workbox creates the respective service worker and dynamically generate the `service-worker.js`
+ 5. For first time deployment execute
+     jhipster cloudfoundry
+    
+    There will be series of config questions to answer to set the environment
+    (a) select inmar as app name
+    (b) set service type as cleardb
+    (c) set plan as spark
+    (d) service name as inmar
+    
+    Jhipster will builds,uploads package to the pivotal and starts the service
+ 
+ 6. From next time onwards execute the following commands to host the applicaitn
+ 
+    ./mvnw -Pprod package
+    
+    cf push -f ./deploy/cloudfoundry/manifest.yml -p target\*.war
 
-### Managing dependencies
+    cf bind-service inmar inmar
+    
+    cf restage inmar
+    
+    cf services
+    
+ 7. Browse to service in broser
+ 
+ 
+ ## Debugging & Health Check of deployed service
+ 
+Cloudfoundry client provides option to monitor and debug the application
+1. Retrieve logs
+ 
+    cf logs --recent
+    
+2. Retrieve health and resource usage of the app 
 
-For example, to add [Leaflet][] library as a runtime dependency of your application, you would run following command:
+    cf app app_name
 
-    yarn add --exact leaflet
+3. App events
 
-To benefit from TypeScript type definitions from [DefinitelyTyped][] repository in development, you would run following command:
+    cf events app_name
 
-    yarn add --dev --exact @types/leaflet
-
-Then you would import the JS and CSS files specified in library's installation instructions so that [Webpack][] knows about them:
-Edit [src/main/webapp/app/vendor.ts](src/main/webapp/app/vendor.ts) file:
-~~~
-import 'leaflet/dist/leaflet.js';
-~~~
-
-Edit [src/main/webapp/content/css/vendor.css](src/main/webapp/content/css/vendor.css) file:
-~~~
-@import '~leaflet/dist/leaflet.css';
-~~~
-Note: there are still few other things remaining to do for Leaflet that we won't detail here.
-
-For further instructions on how to develop with JHipster, have a look at [Using JHipster in development][].
-
-### Using angular-cli
-
-You can also use [Angular CLI][] to generate some custom client code.
-
-For example, the following command:
-
-    ng generate component my-component
-
-will generate few files:
-
-    create src/main/webapp/app/my-component/my-component.component.html
-    create src/main/webapp/app/my-component/my-component.component.ts
-    update src/main/webapp/app/app.module.ts
-
-
-## Building for production
-
-To optimize the inmar application for production, run:
-
-    ./mvnw -Pprod clean package
-
-This will concatenate and minify the client CSS and JavaScript files. It will also modify `index.html` so it references these new files.
-To ensure everything worked, run:
-
-    java -jar target/*.war
-
-Then navigate to [http://localhost:8080](http://localhost:8080) in your browser.
-
-Refer to [Using JHipster in production][] for more details.
-
-## Testing
-
-To launch your application's tests, run:
-
-    ./mvnw clean test
-
-### Client tests
-
-Unit tests are run by [Jest][] and written with [Jasmine][]. They're located in [src/test/javascript/](src/test/javascript/) and can be run with:
-
-    yarn test
-
-
-
-For more information, refer to the [Running tests page][].
-
-## Using Docker to simplify development (optional)
-
-You can use Docker to improve your JHipster development experience. A number of docker-compose configuration are available in the [src/main/docker](src/main/docker) folder to launch required third party services.
-
-For example, to start a mysql database in a docker container, run:
-
-    docker-compose -f src/main/docker/mysql.yml up -d
-
-To stop it and remove the container, run:
-
-    docker-compose -f src/main/docker/mysql.yml down
-
-You can also fully dockerize your application and all the services that it depends on.
-To achieve this, first build a docker image of your app by running:
-
-    ./mvnw verify -Pprod dockerfile:build dockerfile:tag@version dockerfile:tag@commit
-
-Then run:
-
-    docker-compose -f src/main/docker/app.yml up -d
-
-For more information refer to [Using Docker and Docker-Compose][], this page also contains information on the docker-compose sub-generator (`jhipster docker-compose`), which is able to generate docker configurations for one or several JHipster applications.
-
-## Continuous Integration (optional)
-
-To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
-
-[JHipster Homepage and latest documentation]: https://www.jhipster.tech
-[JHipster 5.1.0 archive]: https://www.jhipster.tech/documentation-archive/v5.1.0
-
-[Using JHipster in development]: https://www.jhipster.tech/documentation-archive/v5.1.0/development/
-[Using Docker and Docker-Compose]: https://www.jhipster.tech/documentation-archive/v5.1.0/docker-compose
-[Using JHipster in production]: https://www.jhipster.tech/documentation-archive/v5.1.0/production/
-[Running tests page]: https://www.jhipster.tech/documentation-archive/v5.1.0/running-tests/
-[Setting up Continuous Integration]: https://www.jhipster.tech/documentation-archive/v5.1.0/setting-up-ci/
-
-
-[Node.js]: https://nodejs.org/
-[Yarn]: https://yarnpkg.org/
-[Webpack]: https://webpack.github.io/
-[Angular CLI]: https://cli.angular.io/
-[BrowserSync]: http://www.browsersync.io/
-[Jest]: https://facebook.github.io/jest/
-[Jasmine]: http://jasmine.github.io/2.0/introduction.html
-[Protractor]: https://angular.github.io/protractor/
-[Leaflet]: http://leafletjs.com/
-[DefinitelyTyped]: http://definitelytyped.org/
