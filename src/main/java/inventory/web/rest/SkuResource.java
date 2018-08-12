@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import inventory.service.SkuService;
 import inventory.web.rest.errors.BadRequestAlertException;
 import inventory.web.rest.util.HeaderUtil;
+import inventory.service.dto.SearchRequestDTO;
 import inventory.service.dto.SkuDTO;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -115,5 +116,22 @@ public class SkuResource {
         log.debug("REST request to delete Sku : {}", id);
         skuService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+    
+    
+    /**
+     * POST  /skus/search : Search SKUs given criteria.
+     *
+    * @return the ResponseEntity with status 200 (OK) and with body the updated skuDTO,
+     * or with status 400 (Bad Request) if the skuDTO is not valid,
+     * or with status 500 (Internal Server Error) if the skuDTO couldn't be updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/skus/search")
+    @Timed
+    public List<SkuDTO> searchSkus(@Valid @RequestBody SearchRequestDTO searchRequestDTO) throws URISyntaxException {
+        log.debug("REST request to Seach Skus : {}", searchRequestDTO);
+        
+        return skuService.findAllBySearchParams(searchRequestDTO);
     }
 }

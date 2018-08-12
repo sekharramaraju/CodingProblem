@@ -1,4 +1,50 @@
-<div class="row">
+
+<div class="container-fluid">
+ 
+    <ngb-carousel #carousel *ngIf="images">
+       <ng-template ngbSlide>
+            <img class="Atrium">
+            <div class="carousel-caption">
+                <div class="edge-title" style="font-size : 3.125em;font-weight:bold;">
+                    We make valuable ideas invaluable.
+                </div>
+                    <div class="edge-desc" style="">
+                        Inmar's capabilities and technology are available to business allies to advance strategies and spur growth.
+                    </div>
+            </div>   
+        </ng-template>
+        <ng-template ngbSlide>
+            <img class="warehouse">
+            <div class="carousel-caption">
+                <div class="edge-title" style="font-size : 3.125em;font-weight:bold;">
+                            We are the most trusted intermediary connecting brands and&nbsp;retailers.
+                </div>
+                    
+                    <div class="edge-desc" style="">
+                        Our analytics, platforms and services enable trading partners to optimize their promotions, reverse supply chain, and pharmacy business&nbsp;results.
+                    </div>
+            </div>
+        </ng-template>
+        <ng-template ngbSlide>
+            <img class="pharmacy">
+            <div class="carousel-caption">
+                    <div class="edge-title-area">
+                            <div class="edge-title caption-dark" style="font-size : 3.125em;font-weight:bold;color:#424242;">
+                            We help clients be more profitable, efficient and compliant.
+                        </div>
+
+                        <div class="edge-desc" style="color:#424242;">
+                                Our financial management, returns and recall processing, and workplace solutions generate better business and patient outcomes.												
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </ngb-carousel>
+
+</div>      
+
+<!-- <div class="row">
     <div class="col-md-3">
         <span class="hipster img-fluid rounded"></span>
     </div>
@@ -11,18 +57,17 @@
                 <span *ngIf="account"
                    > You are logged in as user "{{account.login}}". </span>
             </div>
-
-            <div class="alert alert-warning" *ngSwitchCase="false">
+            <!-- <div class="alert alert-warning" *ngSwitchCase="false">
                 <span>If you want to </span>
                 <a class="alert-link" (click)="login()">sign in</a><span>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
             </div>
             <div class="alert alert-warning" *ngSwitchCase="false">
                 <span>You don't have an account yet?</span>&nbsp;
                 <a class="alert-link" routerLink="register">Register a new account</a>
-            </div>
+            </div> 
         </div>
 
-        <p>
+        <!-- <p>
             If you have any question on JHipster:
         </p>
 
@@ -36,6 +81,6 @@
 
         <p>
             <span>If you like JHipster, don't forget to give us a star on</span> <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener">GitHub</a>!
-        </p>
+        </p> 
     </div>
-</div>
+</div> -->

@@ -16,6 +16,9 @@ import { InmarHomeModule } from './home/home.module';
 import { InmarAccountModule } from './account/account.module';
 import { InmarEntityModule } from './entities/entity.module';
 import { StateStorageService } from 'app/core/auth/state-storage.service';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { InmarChartModule } from 'app/chart/chart.module';
+
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ErrorComponent } from './layouts';
 
@@ -28,7 +31,9 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
         InmarCoreModule,
         InmarHomeModule,
         InmarAccountModule,
-        InmarEntityModule
+        InmarEntityModule,
+        InmarChartModule,
+        NgbModule.forRoot()
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, FooterComponent],

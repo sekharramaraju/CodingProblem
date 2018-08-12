@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { ISku } from 'app/shared/model/sku.model';
+import { ISearch } from 'app/shared/model/search.model';
 
 type EntityResponseType = HttpResponse<ISku>;
 type EntityArrayResponseType = HttpResponse<ISku[]>;
@@ -34,5 +35,8 @@ export class SkuService {
 
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    }
+    search(sku: ISearch): Observable<EntityArrayResponseType> {
+        return this.http.post<ISku[]>(`${this.resourceUrl}/search`, sku, { observe: 'response' });
     }
 }

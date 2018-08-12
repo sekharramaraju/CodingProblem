@@ -10,6 +10,8 @@ import { SkuComponent } from './sku.component';
 import { SkuDetailComponent } from './sku-detail.component';
 import { SkuUpdateComponent } from './sku-update.component';
 import { SkuDeletePopupComponent } from './sku-delete-dialog.component';
+import { SkuSearchComponent } from './sku-search.component';
+
 import { ISku } from 'app/shared/model/sku.model';
 
 @Injectable({ providedIn: 'root' })
@@ -65,6 +67,15 @@ export const skuRoute: Routes = [
         resolve: {
             sku: SkuResolve
         },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'Skus'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'sku/search',
+        component: SkuSearchComponent,
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'Skus'
